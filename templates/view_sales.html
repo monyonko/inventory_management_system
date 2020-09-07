@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    View sales
+{% endblock %}
+
+
+{% block content %}
+    <h3 style="text-align: center; margin-top: 10px;">        
+        Sales for {{ inv_name.name }}
+    </h3>
+    <div class="container">
+        <a href="{{ url_for('info') }}">
+            <button class="btn btn-primary">All Inventories</button>
+        </a>
+        {% for each in sales %}
+        <p> 
+            Make it a Table <br>
+            Counter <br>
+            Quantity : {{ each.quantity }} <br>
+            Total sales (Kshs) : <br>
+            Sold at : {{ each.created_at }}       
+        </p>
+    {% endfor %}
+    </div>
+{% endblock %}

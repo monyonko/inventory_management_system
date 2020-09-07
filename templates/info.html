@@ -1,0 +1,226 @@
+{% extends 'base.html' %}
+
+
+
+{% block title %}
+Inventories
+{% endblock %}
+
+
+{% block content %}
+
+<div class="container ">
+
+    <button type="button" style="margin-top: 30px;" class="btn btn-primary" data-toggle="modal"
+        data-target="#addInventories">
+        Add Inventory
+    </button>
+    <div class="modal fade" id="addInventories" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Add New Inventory</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+
+                    <form action="{{ url_for('info') }}" method="POST">
+                        <div class="form-group">
+                            <label for="exampleInputEmail1">Name</label>
+                            <input name="name" type="name" class="form-control" id="exampleInputEmail1"
+                                aria-describedby="emailHelp">
+                            <small id="emailHelp" class="form-text text-muted">Add stock for this
+                                inventory</small>
+                        </div>
+                        <div class="form-group">
+                            <label for="exampleInputEmail1">Type</label>
+                            <select name="type" class="form-control" id="exampleFormControlSelect1">
+                                <option></option>
+                                <option>Product</option>
+                                <option>Service</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="exampleInputEmail1">Buying Price</label>
+                            <input name="buying_price" type="float" class="form-control" id="exampleInputEmail1"
+                                aria-describedby="emailHelp">
+                        </div>
+                        <div class="form-group">
+                            <label for="exampleInputEmail1">Selling Price</label>
+                            <input name="selling_price" type="float" class="form-control" id="exampleInputEmail1"
+                                aria-describedby="emailHelp">
+                        </div>
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-primary">Add Inventory</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="container-fluid" style="margin-top: 30px;">
+    <table class="table" id="myTable">
+        <thead>
+            <tr>
+                <th scope="col">id</th>
+                <th scope="col">Name</th>
+                <th scope="col">Type</th>
+                <th scope="col">Buying Price</th>
+                <th scope="col">Selling Price</th>
+                <th scope="col">Stock</th>
+                <th scope="col">Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% set counter = namespace(value=1) %}
+            {% for inv in inventories %}
+            <tr>
+                <th scope="row">{{ counter.value }}</th>
+                <td>{{ inv.name }}</td>
+                <td>{{ inv.inv_type }}</td>
+                <td>{{ inv.buying_price }}</td>
+                <td>{{ inv.selling_price }}</td>
+                <td>
+                    {% for each in remaining_stock %}
+                        {% if each[0] == inv.id  %}
+                            {{ each[1] }}
+                        {% endif %}
+                    {% endfor %}
+                </td>
+                <td>
+                    <button type="button" class="btn btn-success btn-sm" data-toggle="modal" data-target="#addStock{{ inv.id }}">
+                        Add Stock
+                    </button>
+                    <div class="modal fade" id="addStock{{ inv.id }}" tabindex="-1" role="dialog"
+                        aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="exampleModalLabel">Add Stock</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <form action="{{ url_for('add_stock', inv_id=inv.id) }}" method="POST" >
+                                        <div class="form-group">
+                                            <label for="exampleInputEmail1">Stock</label>
+                                            <input name="stock" type="number" class="form-control" id="exampleInputEmail1"
+                                                aria-describedby="emailHelp">
+                                            <small id="emailHelp" class="form-text text-muted">Add stock for this
+                                                inventory</small>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="submit" class="btn btn-primary">Add Stock</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#makeSale{{ inv.id }}">
+                        Make Sale
+                    </button>
+                    <div class="modal fade" id="makeSale{{  inv.id }}" tabindex="-1" role="dialog"
+                        aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="exampleModalLabel">Make Sale</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <form action="{{ url_for('make_sale', inv_id=inv.id ) }} " method="POST">
+                                        <div class="form-group">
+                                            <label for="exampleInputEmail1">Quantity</label>
+                                            <input name='quantity' type="number" class="form-control" id="exampleInputEmail1"
+                                                aria-describedby="emailHelp">
+                                            <small id="emailHelp" class="form-text text-muted">Number of sales</small>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="submit" class="btn btn-primary">Make Sale</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <a href="{{ url_for('view_sales', inv_id = inv.id) }}">
+                        <button type="button" class="btn btn-warning btn-sm">View Sales</button>
+                    </a>
+                    <button type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#editInventory{{ inv.id }}">
+                        Edit
+                    </button>
+                    <div class="modal fade" id="editInventory{{ inv.id }}" tabindex="-1" role="dialog"
+                        aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="exampleModalLabel">Edit Inventory</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <form action="{{ url_for('edit', inv_id=inv.id) }}" method="POST" >
+                                        <div class="form-group">
+                                            <label for="exampleInputEmail1">Name</label>
+                                            <input name="name" value="{{ inv.name }}" type="name" class="form-control" id="exampleInputEmail1"
+                                                aria-describedby="emailHelp">
+                                            <small id="emailHelp" class="form-text text-muted">Add stock for this
+                                                inventory</small>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="exampleInputEmail1">Type</label>
+                                            <select name="type" class="form-control" id="exampleFormControlSelect1">
+                                                <option>{{ inv.inv_type }}</option>
+                                                <option>Product</option>
+                                                <option>Service</option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="exampleInputEmail1">Buying Price</label>
+                                            <input name="buying_price" value="{{ inv.buying_price }}" type="float" class="form-control" id="exampleInputEmail1"
+                                                aria-describedby="emailHelp">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="exampleInputEmail1">Selling Price</label>
+                                            <input name="selling_price" value="{{ inv.selling_price }}" type="float" class="form-control" id="exampleInputEmail1"
+                                                aria-describedby="emailHelp">
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="submit" class="btn btn-primary">Edit</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <a href="{{ url_for('delete_inventory', inv_id = inv.id) }}">
+                        <button type="button" class="btn btn-danger btn-sm">Delete</button>
+                    </a>
+                </td>
+            </tr>
+            {% set counter.value = counter.value+1 %}
+            {% endfor %}
+        </tbody>
+        <tfoot>
+            <tr>
+                <th>#</th>
+                <th>Name</th>
+                <th>Type</th>
+                <th>Buying Price</th>
+                <th>Selling Price</th>
+                <th>Stock</th>
+                <th>Action</th>
+            </tr>
+        </tfoot>
+    </table>
+</div>
+{% endblock %}

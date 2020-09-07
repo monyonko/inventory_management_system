@@ -1,0 +1,11 @@
+.container {
+    object-position: center;
+    text-align: center;
+    font-size: 1.5em;
+    background-color: wheat;
+    margin: 40px;
+    padding: 80px;
+}
+body {
+    background-color: palegoldenrod;
+}
